@@ -76,7 +76,7 @@ static void time_init(void)
 	startup_time = kernel_mktime(&time);
 }
 
-void main(void)		/* This really IS void, no error here. */
+int main(void)		/* This really IS void, no error here. */
 {			/* The startup routine assumes (well, ...) this */
 /*
  * Interrupts are still disabled. Do necessary setups, then
@@ -101,6 +101,8 @@ void main(void)		/* This really IS void, no error here. */
  * task can run, and if not we return here.
  */
 	for(;;) pause();
+
+	return 0;
 }
 
 static int printf(const char *fmt, ...)
@@ -114,16 +116,14 @@ static int printf(const char *fmt, ...)
 	return i;
 }
 
-static char * argv[] = { "-",NULL };
-static char * envp[] = { "HOME=/usr/root", NULL };
+static char * argv[] = { "/bin/sh",NULL };
+static char * envp[] = { "HOME=/root","PATH=/bin","PWD=/", NULL };
 
 void init(void)
 {
 	int i,j;
 
 	setup();
-	if (!fork())
-		_exit(execve("/bin/update",NULL,NULL));
 	(void) open("/dev/tty0",O_RDWR,0);
 	(void) dup(0);
 	(void) dup(0);
